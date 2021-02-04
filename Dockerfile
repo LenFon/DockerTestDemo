@@ -18,8 +18,7 @@ RUN dotnet publish "${PROJECT_NAME}.csproj" -c Release -o /app/publish
 
 FROM base AS final
 ARG PROJECT_NAME
-ENV PROJECT_NAME=$PROJECT_NAME
 WORKDIR /app
 COPY --from=publish /app/publish .
-#ENTRYPOINT ["dotnet", "${PROJECT_NAME:.dll}"]
-CMD dotnet ${PROJECT_NAME}.dll
+RUN echo "#!/bin/bash \n dotnet ${PROJECT_NAME}.dll" > start.sh && chmod +x ./start.sh
+ENTRYPOINT ["./start.sh"]
